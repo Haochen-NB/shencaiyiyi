@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>审采奕奕 - 事务所实习备战手册</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.8;
+        }
+        .container { max-width: 420px; margin: 0 auto; background: white; min-height: 100vh; position: relative; padding-bottom: 80px; }
+
+        /* 水印 */
+        .watermark {
+            position: fixed; bottom: 70px; right: 10px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white; padding: 6px 12px; border-radius: 20px;
+            font-size: 0.75em; font-weight: 600;
+            z-index: 1000; pointer-events: none;
+            box-shadow: 0 2px 10px rgba(102,126,234,0.3);
+        }
+        .watermark::before { content: "🎯 "; }
+
+        /* 顶部导航 */
+        .top-nav {
+            position: sticky; top: 0; z-index: 100;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 15px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            color: white;
+        }
+        .top-nav .logo { font-size: 1.3em; font-weight: 700; }
+        .top-nav .logo span { color: #667eea; }
+
+        /* Hero区域 */
+        .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white; padding: 40px 20px 30px; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M20 0v40M0 20h40'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero h1 { font-size: 1.8em; font-weight: 800; position: relative; z-index: 1; }
+        .hero h1 span { color: #667eea; }
+        .hero p { opacity: 0.85; margin-top: 8px; position: relative; z-index: 1; font-size: 0.85em; }
+
+        /* 公告栏 */
+        .announcement {
+            background: linear-gradient(90deg, #f5576c, #f093fb);
+            color: white; padding: 10px 15px; font-size: 0.8em;
+            text-align: center; font-weight: 600;
+        }
+
+        /* 模块导航 */
+        .module-grid { padding: 15px 12px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .module-card {
+            background: white; border-radius: 14px; padding: 15px 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            text-align: center; cursor: pointer; transition: all 0.3s;
+            border: 2px solid transparent; font-size: 0.85em;
+        }
+        .module-card:active { transform: scale(0.95); }
+        .module-card.active { border-color: #667eea; background: #f8f9ff; }
+        .module-icon { font-size: 1.8em; margin-bottom: 5px; display: block; }
+        .module-title { font-weight: 700; color: #1a1a2e; font-size: 0.85em; }
+        .module-desc { font-size: 0.7em; color: #7f8c8d; margin-top: 2px; }
+
+        /* 内容区域 */
+        .content-area { padding: 0 12px; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 卡片 */
+        .card {
+            background: white; border-radius: 14px; padding: 18px;
+            margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+        .card-title {
+            font-size: 1em; font-weight: 700; color: #1a1a2e;
+            margin-bottom: 12px; padding-bottom: 10px;
+            border-bottom: 2px solid #f0f2f5;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* 事务所项 */
+        .firm-item {
+            display: flex; align-items: center; padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .firm-item:last-child { border-bottom: none; }
+        .firm-logo {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.75em; color: white; margin-right: 10px; flex-shrink: 0;
+        }
+        .firm-info { flex: 1; min-width: 0; }
+        .firm-name { font-weight: 700; font-size: 0.9em; }
+        .firm-deadline { font-size: 0.75em; color: #e74c3c; margin-top: 2px; }
+        .firm-link {
+            display: inline-block; padding: 3px 10px; border-radius: 12px;
+            font-size: 0.7em; background: #e8f4fd; color: #667eea; font-weight: 600;
+            text-decoration: none; cursor: pointer;
+        }
+        .firm-link:active { background: #d0e0ff; }
+
+        /* 标签 */
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; }
+        .tag-hot { background: linear-gradient(135deg, #f5576c, #f093fb); color: white; }
+        .tag-new { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+        .tag-tip { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+
+        /* 投递时间表 */
+        .timeline-table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
+        .timeline-table th {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white; padding: 10px 6px; text-align: left; font-weight: 600; font-size: 0.75em;
+        }
+        .timeline-table td { padding: 10px 6px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+        .status-hot { color: #e74c3c; font-weight: 700; }
+        .status-open { color: #27ae60; font-weight: 600; }
+        .status-close { color: #95a5a6; }
+
+        /* 简历上传 */
+        .upload-area {
+            border: 2px dashed #667eea; border-radius: 12px; padding: 25px;
+            text-align: center; cursor: pointer; transition: all 0.3s;
+            background: #f8f9ff;
+        }
+        .upload-area:active { background: #eef0ff; }
+        .upload-icon { font-size: 2em; margin-bottom: 8px; display: block; }
+        .upload-text { color: #667eea; font-weight: 600; font-size: 0.9em; }
+        .upload-hint { font-size: 0.75em; color: #95a5a6; margin-top: 4px; }
+
+        /* 标签选择 */
+        .tag-selector { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+        .tag-option {
+            padding: 5px 12px; border-radius: 15px; font-size: 0.8em;
+            border: 1.5px solid #d0d0d0; color: #555; cursor: pointer; transition: all 0.2s;
+        }
+        .tag-option.selected { background: #667eea; color: white; border-color: #667eea; }
+
+        /* 面试问答 */
+        .qa-item { margin-bottom: 10px; }
+        .qa-question {
+            background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
+            border-left: 3px solid #667eea; padding: 10px 12px;
+            border-radius: 0 8px 8px 0; font-weight: 600; font-size: 0.85em; cursor: pointer;
+        }
+        .qa-answer {
+            padding: 10px 12px; color: #555; font-size: 0.8em;
+            display: none; background: #f8f9fa; border-radius: 0 0 8px 8px; line-height: 1.7;
+        }
+        .qa-answer.show { display: block; }
+
+        /* 进度圆圈 */
+        .score-circle {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.9em; color: white; flex-shrink: 0;
+        }
+        .score-high { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .score-mid { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .score-low { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+        /* 提示框 */
+        .tip-box {
+            background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
+            border: 1px solid rgba(102,126,234,0.3); border-radius: 10px;
+            padding: 10px 12px; margin: 8px 0; font-size: 0.8em; line-height: 1.7;
+        }
+        .tip-box::before { content: "💡 "; font-weight: 700; }
+
+        /* 警告框 */
+        .warn-box {
+            background: linear-gradient(135deg, rgba(245,175,25,0.1), rgba(241,39,17,0.1));
+            border: 1px solid rgba(245,175,25,0.25); border-radius: 10px;
+            padding: 10px 12px; margin: 8px 0; font-size: 0.8em; line-height: 1.7;
+        }
+
+        /* 按钮 */
+        .btn {
+            display: inline-block; padding: 8px 20px; border-radius: 20px;
+            font-weight: 700; font-size: 0.85em; cursor: pointer; border: none; transition: all 0.3s; text-align: center;
+        }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .btn-primary:active { transform: scale(0.96); }
+        .btn-outline { background: white; color: #667eea; border: 1.5px solid #667eea; }
+        .btn-full { width: 100%; display: block; margin-top: 10px; }
+
+        /* 流程步骤 */
+        .step-list { counter-reset: step; }
+        .step-item {
+            display: flex; align-items: flex-start; padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .step-item:last-child { border-bottom: none; }
+        .step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; font-weight: 700; font-size: 0.8em;
+            display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0;
+        }
+        .step-content { flex: 1; }
+        .step-title { font-weight: 700; font-size: 0.9em; }
+        .step-desc { font-size: 0.75em; color: #777; margin-top: 2px; }
+
+        /* 低年级项目卡片 */
+        .program-card {
+            background: #f8f9ff; border-radius: 10px; padding: 12px; margin: 8px 0;
+            border-left: 3px solid #667eea;
+        }
+        .program-name { font-weight: 700; font-size: 0.9em; color: #1a1a2e; }
+        .program-desc { font-size: 0.75em; color: #555; margin-top: 4px; }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 420px;
+            background: white; border-top: 1px solid #eee;
+            display: flex; justify-content: space-around; padding: 8px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 100;
+        }
+        .nav-item { text-align: center; cursor: pointer; padding: 5px 8px; font-size: 0.7em; color: #95a5a6; }
+        .nav-item.active { color: #667eea; font-weight: 700; }
+
+        /* 输入框 */
+        input[type="text"], textarea {
+            width: 100%; padding: 10px 12px; border: 1.5px solid #ddd;
+            border-radius: 10px; font-size: 0.85em; outline: none; margin: 8px 0;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus { border-color: #667eea; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 水印 -->
+    <div class="watermark">审采奕奕 @Zidi子第</div>
+
+    <!-- 顶部导航 -->
+    <div class="top-nav">
+        <div class="logo">审采<span>奕奕</span></div>
+        <div style="font-size:0.75em;opacity:0.8;">事务所实习备战</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>🎯 审采<span>奕奕</span></h1>
+        <p>从审计实务视角，帮你找到适合自己的事务所实习</p>
+    </div>
+
+    <!-- 公告 -->
+    <div class="announcement">
+        🔥 2026暑期实习已全面开放！抓紧时间投递！
+    </div>
+
+    <!-- 模块导航 -->
+    <div class="module-grid">
+        <div class="module-card active" onclick="showSection('jobs')">
+            <span class="module-icon">🏢</span>
+            <div class="module-title">实习岗位</div>
+        </div>
+        <div class="module-card" onclick="showSection('big4')">
+            <span class="module-icon">🌐</span>
+            <div class="module-title">四大详情</div>
+        </div>
+        <div class="module-card" onclick="showSection('bada')">
+            <span class="module-icon">🏛️</span>
+            <div class="module-title">八大详情</div>
+        </div>
+        <div class="module-card" onclick="showSection('local')">
+            <span class="module-icon">🏢</span>
+            <div class="module-title">本地所</div>
+        </div>
+        <div class="module-card" onclick="showSection('resume')">
+            <span class="module-icon">📝</span>
+            <div class="module-title">简历修改</div>
+        </div>
+        <div class="module-card" onclick="showSection('match')">
+            <span class="module-icon">🎯</span>
+            <div class="module-title">岗位推荐</div>
+        </div>
+        <div class="module-card" onclick="showSection('interview')">
+            <span class="module-icon">💬</span>
+            <div class="module-title">面试准备</div>
+        </div>
+        <div class="module-card" onclick="showSection('timeline')">
+            <span class="module-icon">📅</span>
+            <div class="module-title">投递时间</div>
+        </div>
+        <div class="module-card" onclick="showSection('workplace')">
+            <span class="module-icon">🌟</span>
+            <div class="module-title">职场建议</div>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content-area">
+
+        <!-- ① 实习岗位入口 -->
+        <div class="section active" id="jobs">
+            <div class="card">
+                <div class="card-title">🌐 四大暑期实习（门槛高但值得冲）</div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#667eea,#764ba2);">PwC</div>
+                    <div class="firm-info">
+                        <div class="firm-name">普华永道 PwC <a href="https://www.pwccn.com/zh/careers" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">2027届毕业生 | 暑期实习已开放</div>
+                    </div>
+                </div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#11998e,#38ef7d);">DTT</div>
+                    <div class="firm-info">
+                        <div class="firm-name">德勤 Deloitte <a href="https://www2.deloitte.com/cn/zh/careers" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">2027/2028届 | 2月开放申请</div>
+                    </div>
+                </div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#f093fb,#f5576c);">EY</div>
+                    <div class="firm-info">
+                        <div class="firm-name">安永 EY <a href="https://www.ey.com/zh_cn/careers" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">大三学生 | 1月-4月申请</div>
+                    </div>
+                </div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#0ba360,#3cba92);">KPMG</div>
+                    <div class="firm-info">
+                        <div class="firm-name">毕马威 KPMG <a href="https://home.kpmg/cn/zh/home/careers.html" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">寒假实习 | 11月-1月申请</div>
+                    </div>
+                </div>
+                <div class="tip-box">
+                    <strong>为什么选四大？</strong>品牌背书+系统培训+Return Offer机会+国际化视野
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏛️ 八大实习（机会多、入职快）</div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#ac4bba,#6c5ce7);">SW</div>
+                    <div class="firm-info">
+                        <div class="firm-name">信永中和 <a href="https://job.shinewing.com" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">滚动招聘 | 全国30+城市</div>
+                    </div>
+                </div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#f5af19,#f12711);">RSM</div>
+                    <div class="firm-info">
+                        <div class="firm-name">容诚 <a href="https://careers.rccpa.com.cn" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">实习满30天发补贴</div>
+                    </div>
+                </div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#667eea,#764ba2);">PC</div>
+                    <div class="firm-info">
+                        <div class="firm-name">天健 <a href="https://www.panc.com.cn" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">八大之首 | 年审旺季大量招人</div>
+                    </div>
+                </div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#11998e,#38ef7d);">BDO</div>
+                    <div class="firm-info">
+                        <div class="firm-name">立信 <a href="https://www.bdo.com.cn" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">深圳分所即日起招聘</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏢 本地所（薪资灵活、成长快）</div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#e74c3c,#c0392b);">TJ</div>
+                    <div class="firm-info">
+                        <div class="firm-name">天职国际 <a href="https://www.tzcpa.com" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">全国20+分所 | 年审需求大</div>
+                    </div>
+                </div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);">ZH</div>
+                    <div class="firm-info">
+                        <div class="firm-name">中汇 <a href="https://www.zhcpa.cn" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">杭州总部 | 长三角强势</div>
+                    </div>
+                </div>
+                <div class="firm-item">
+                    <div class="firm-logo" style="background:linear-gradient(135deg,#1abc9c,#16a085);">ZH</div>
+                    <div class="firm-info">
+                        <div class="firm-name">众华 <a href="http://www.zhonghuacpa.com" target="_blank" class="firm-link">官网投递</a></div>
+                        <div class="firm-deadline">上海强势 | 薪资有竞争力</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>投递建议：</strong>四大+八大+本地所可同时投递，互不影响！优先官网投递，其次官方公众号。
+            </div>
+        </div>
+
+        <!-- ② 四大详情 -->
+        <div class="section" id="big4">
+            <div class="card">
+                <div class="card-title">🌐 普华永道 PwC</div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>2027届毕业生（本科/硕士），会计/审计专业优先</p>
+                <p style="font-size:0.85em;margin-top:8px;"><strong>你能做什么：</strong></p>
+                <ul style="font-size:0.8em;margin-left:15px;color:#555;">
+                    <li>审计工作底稿的创建与维护</li>
+                    <li>财务报表数据验证（函证！）</li>
+                    <li>会计分录完整性测试</li>
+                    <li>外部函证收发及跟进</li>
+                </ul>
+                <div class="tip-box">官网投递优先级最高 | 六级550+/雅思6.5+有优势</div>
+                <a href="https://www.pwccn.com/zh/careers" target="_blank" class="btn btn-primary btn-full">🔗 前往 PwC 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🌐 德勤 Deloitte</div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>2027/2028届毕业生，至少2个月全职实习</p>
+                <p style="font-size:0.85em;margin-top:8px;"><strong>你能做什么：</strong></p>
+                <ul style="font-size:0.8em;margin-left:15px;color:#555;">
+                    <li>执行各类审计程序（询问、核对、追踪、检查、观察）</li>
+                    <li>执行控制测试</li>
+                    <li>编制审计工作底稿</li>
+                </ul>
+                <div class="tip-box">有项目制实习，灵活性更高 | Discovery Intern面向低年级</div>
+                <a href="https://www2.deloitte.com/cn/zh/careers" target="_blank" class="btn btn-primary btn-full">🔗 前往 Deloitte 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🌐 安永 EY</div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大三学生（暑期），大一大二（Discovery）</p>
+                <p style="font-size:0.85em;margin-top:8px;"><strong>你能做什么：</strong></p>
+                <ul style="font-size:0.8em;margin-left:15px;color:#555;">
+                    <li>协助审计项目组完成函证工作</li>
+                    <li>参与各类审计项目，了解审计全流程</li>
+                </ul>
+                <div class="tip-box">Audit Intern项目垂直对接审计业务 | 低年级可投Discovery</div>
+                <a href="https://www.ey.com/zh_cn/careers" target="_blank" class="btn btn-primary btn-full">🔗 前往 EY 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🌐 毕马威 KPMG</div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大三在读、全日制本科生/研究生</p>
+                <p style="font-size:0.85em;margin-top:8px;"><strong>你能做什么：</strong></p>
+                <ul style="font-size:0.8em;margin-left:15px;color:#555;">
+                    <li>执行现金余额及财务报表核对</li>
+                    <li>编制和归档审计工作底稿</li>
+                    <li>收集客户数据，准备函证确认及跟进</li>
+                </ul>
+                <div class="tip-box">Embark Scholar Intern面向CPA方向 | Basecamp寒暑假都有</div>
+                <a href="https://home.kpmg/cn/zh/home/careers.html" target="_blank" class="btn btn-primary btn-full">🔗 前往 KPMG 官网投递</a>
+            </div>
+        </div>
+
+        <!-- ③ 八大详情 -->
+        <div class="section" id="bada">
+            <div class="card">
+                <div class="card-title">🏛️ 信永中和 ShineWing <span class="tag tag-new">滚动招聘</span></div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>本科大二及以上，全国30+城市可选</p>
+                <div class="tip-box">🔥 滚动招聘，没有固定截止日期 | 🔥 城市覆盖广 | 🔥 低年级友好</div>
+                <p style="font-size:0.8em;color:#777;">成都分所常年招聘，离四川近的同学优先考虑</p>
+                <a href="https://job.shinewing.com" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏛️ 容诚 RSM <span class="tag tag-hot">有补贴</span></div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大二/大三/大四本科生，研究生也可</p>
+                <div class="tip-box">🔥 实习满30天发补贴 | 🔥 表现优异可获内推资格 | 🔥 即日起至2026年5月都有机会</div>
+                <a href="https://careers.rccpa.com.cn" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏛️ 天健 Pan-China <span class="tag tag-new">八大之首</span></div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大二及以上，财务/会计/审计相关专业</p>
+                <div class="tip-box">🔥 全国30+分所 | 🔥 年审旺季大量招人 | 🔥 综合实力强</div>
+                <a href="https://www.panc.com.cn" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏛️ 立信 BDO</div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>本科大二及以上，全国各分所</p>
+                <div class="tip-box">🔥 深圳分所即日起至7月招聘 | 🔥 验证中心助理做函证工作</div>
+                <a href="https://www.bdo.com.cn" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏛️ 致同 Grant Thornton</div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大二及以上，审计/税务/咨询均可</p>
+                <div class="tip-box">🔥 招聘流程规范 | 🔥 城市覆盖广（北京、上海、深圳、杭州、宁波、成都等）</div>
+                <a href="https://www.grantthornton.cn" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+        </div>
+
+        <!-- ④ 本地所详情 -->
+        <div class="section" id="local">
+            <div class="card">
+                <div class="card-title">🏢 天职国际 Tianzh Professional <span class="tag tag-hot">全国20+分所</span></div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大二及以上，全国分所</p>
+                <div class="tip-box">🔥 年审旺季需求大 | 🔥 晋升路径清晰 | 🔥 培训体系完善</div>
+                <a href="https://www.tzcpa.com" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏢 中汇 Zhonghui <span class="tag tag-new">长三角强势</span></div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大二及以上，总部杭州，分所覆盖全国</p>
+                <div class="tip-box">🔥 杭州总部实力强 | 🔥 薪资有竞争力 | 🔥 长三角就业机会多</div>
+                <a href="https://www.zhcpa.cn" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏢 众华 Zhonghua <span class="tag tag-tip">上海强势</span></div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大二及以上，上海及长三角</p>
+                <div class="tip-box">🔥 上海地区知名度高 | 🔥 薪资灵活 | 🔥 成长速度快</div>
+                <a href="http://www.zhonghuacpa.com" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏢 中审华 Zhong Shen Hua <span class="tag tag-new">天津起家</span></div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大二及以上，北方地区机会多</p>
+                <div class="tip-box">🔥 天津、北京分所强势 | 🔥 国企客户多 | 🔥 稳定性好</div>
+                <a href="https://www.zshcpa.com" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🏢 希格玛 Sigma <span class="tag tag-tip">西北地区强</span></div>
+                <p style="font-size:0.85em;"><strong>适合人群：</strong>大二及以上，西安及西北地区</p>
+                <div class="tip-box">🔥 西安总部 | 🔥 西北地区覆盖率第一 | 🔥 本地客户资源丰富</div>
+                <a href="https://www.xigema.com" target="_blank" class="btn btn-primary btn-full">🔗 前往 官网投递</a>
+            </div>
+
+            <div class="tip-box">
+                <strong>本地所优势：</strong>相比八大，本地所薪资更灵活、晋升更快、项目类型更多样化，适合想快速成长的同学！
+            </div>
+        </div>
+
+        <!-- ⑤ 简历修改 -->
+        <div class="section" id="resume">
+            <div class="card">
+                <div class="card-title">📝 上传简历</div>
+                <div class="upload-area" onclick="handleUpload()">
+                    <span class="upload-icon">📄</span>
+                    <div class="upload-text">点击上传简历文件</div>
+                    <div class="upload-hint">支持 PDF / Word 格式</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">✅ 简历优化 Checklist</div>
+                <label style="display:flex;align-items:center;padding:6px 0;font-size:0.85em;cursor:pointer;">
+                    <input type="checkbox" style="margin-right:8px;accent-color:#667eea;"> 是否包含明确的求职目标（实习岗位）？
+                </label>
+                <label style="display:flex;align-items:center;padding:6px 0;font-size:0.85em;cursor:pointer;">
+                    <input type="checkbox" style="margin-right:8px;accent-color:#667eea;"> 教育背景是否清晰（学校/专业/GPA）？
+                </label>
+                <label style="display:flex;align-items:center;padding:6px 0;font-size:0.85em;cursor:pointer;">
+                    <input type="checkbox" style="margin-right:8px;accent-color:#667eea;"> 是否有相关实习/项目经历（STAR法则）？
+                </label>
+                <label style="display:flex;align-items:center;padding:6px 0;font-size:0.85em;cursor:pointer;">
+                    <input type="checkbox" style="margin-right:8px;accent-color:#667eea;"> 技能证书是否突出（CPA/ACCA/英语）？
+                </label>
+                <label style="display:flex;align-items:center;padding:6px 0;font-size:0.85em;cursor:pointer;">
+                    <input type="checkbox" style="margin-right:8px;accent-color:#667eea;"> 排版是否简洁专业（一页A4）？
+                </label>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💡 AI 优化建议</div>
+                <p style="font-size:0.85em;"><strong>事务所简历核心要点：</strong></p>
+                <p style="font-size:0.8em;color:#555;margin-top:8px;">1. <strong>教育背景置顶</strong> — 学校、专业、GPA、排名</p>
+                <p style="font-size:0.8em;color:#555;">2. <strong>实习经历用STAR法则</strong> — 情境/任务/行动/结果</p>
+                <p style="font-size:0.8em;color:#555;">3. <strong>突出数字</strong> — "参与5个项目" > "参与多个项目"</p>
+                <p style="font-size:0.8em;color:#555;">4. <strong>证书优先</strong> — CPA通过科目、ACCA进度、英语成绩</p>
+                <p style="font-size:0.8em;color:#555;">5. <strong>一页A4为佳</strong> — 四大HR平均看简历时间 < 30秒</p>
+            </div>
+
+            <div class="warn-box">
+                <strong>⚠️ 投递避坑：</strong><br>
+                1. 只盯官网等消息 → 同时关注官方公众号<br>
+                2. 简历一份走天下 → 四大偏外资风，八大偏务实风<br>
+                3. 忽视时间节点 → 四大暑期4-5月开放，6月截止
+            </div>
+        </div>
+
+        <!-- ⑥ 岗位推荐 -->
+        <div class="section" id="match">
+            <div class="card">
+                <div class="card-title">🎯 你的背景匹配</div>
+                <p style="font-size:0.8em;color:#555;margin-bottom:10px;">选择你的情况，系统将推荐最匹配的岗位：</p>
+                <div class="tag-selector">
+                    <span class="tag-option selected" onclick="toggleTag(this)">985/211</span>
+                    <span class="tag-option" onclick="toggleTag(this)">普通本科</span>
+                    <span class="tag-option" onclick="toggleTag(this)">会计专业</span>
+                    <span class="tag-option" onclick="toggleTag(this)">财管专业</span>
+                    <span class="tag-option" onclick="toggleTag(this)">审计实习</span>
+                    <span class="tag-option" onclick="toggleTag(this)">无实习</span>
+                    <span class="tag-option" onclick="toggleTag(this)">CPA在考</span>
+                    <span class="tag-option" onclick="toggleTag(this)">英语六级550+</span>
+                    <span class="tag-option" onclick="toggleTag(this)">大三</span>
+                    <span class="tag-option" onclick="toggleTag(this)">大四</span>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="showMatchResult()">🔍 开始匹配</button>
+            </div>
+
+            <div class="card" id="match-result" style="display:none;">
+                <div class="card-title">🎯 匹配结果</div>
+                <div id="match-content"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📌 心仪岗位输入</div>
+                <input type="text" id="dream-job" placeholder="输入心仪岗位，如：PwC审计实习生">
+                <button class="btn btn-outline btn-full" onclick="analyzeJob()">📋 查看岗位详情</button>
+                <div id="job-detail" style="margin-top:10px;"></div>
+            </div>
+        </div>
+
+        <!-- ⑦ 面试准备 -->
+        <div class="section" id="interview">
+            <div class="card">
+                <div class="card-title">💬 常见面试问题</div>
+                <div class="qa-item">
+                    <div class="qa-question" onclick="toggleQA(this)">❓ 请自我介绍（1分钟版本）</div>
+                    <div class="qa-answer">
+                        <strong>回答要点：</strong><br>
+                        1. 姓名+学校+专业（10秒）<br>
+                        2. 相关经历2-3个（30秒）<br>
+                        3. 为什么选这家事务所（15秒）<br>
+                        4. 个人优势总结（5秒）<br><br>
+                        💡 用数字说话，"通过CPA两门"比"学习能力强"更有力
+                    </div>
+                </div>
+                <div class="qa-item">
+                    <div class="qa-question" onclick="toggleQA(this)">❓ 为什么选择审计/会计行业？</div>
+                    <div class="qa-answer">
+                        <strong>回答框架：</strong><br>
+                        1. 兴趣起源（课程/实习体验）<br>
+                        2. 行业认知（重要性/发展前景）<br>
+                        3. 个人匹配（性格/能力契合）<br>
+                        4. 长期规划（想在事务所学到什么）<br><br>
+                        💡 避免说"事务所是大平台"，要结合自身经历
+                    </div>
+                </div>
+                <div class="qa-item">
+                    <div class="qa-question" onclick="toggleQA(this)">❓ 你对我们事务所有什么了解？</div>
+                    <div class="qa-answer">
+                        <strong>准备要点：</strong><br>
+                        1. 业务范围（审计/税务/咨询）<br>
+                        2. 近期大项目/客户案例<br>
+                        3. 企业文化<br>
+                        4. 培训体系（CPA支持政策）<br><br>
+                        💡 面试前务必浏览官网"Careers"页面！
+                    </div>
+                </div>
+                <div class="qa-item">
+                    <div class="qa-question" onclick="toggleQA(this)">❓ 你有什么问题想问我们？</div>
+                    <div class="qa-answer">
+                        <strong>好问题推荐：</strong><br>
+                        1. 实习生的主要工作内容是什么？<br>
+                        2. 事务所有哪些培训机会？<br>
+                        3. 对CPA考试有什么支持政策？<br>
+                        4. 实习生转正的机会多大？<br><br>
+                        ❌ 避免问：薪资、加班费（太功利）
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📋 面试流程</div>
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-content">
+                            <div class="step-title">网申/简历筛选</div>
+                            <div class="step-desc">约1-2周反馈</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-content">
+                            <div class="step-title">笔试（Aptitude Test）</div>
+                            <div class="step-desc">逻辑/数学/英语，建议提前刷题</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-content">
+                            <div class="step-title">群面（AC面）</div>
+                            <div class="step-desc">案例讨论+团队协作</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-content">
+                            <div class="step-title">合伙人面试（Par面）</div>
+                            <div class="step-desc">聊经历+职业规划</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">5</div>
+                        <div class="step-content">
+                            <div class="step-title">Offer发放</div>
+                            <div class="step-desc">面试后1-2周，记得及时回复</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⑧ 投递时间表 -->
+        <div class="section" id="timeline">
+            <div class="card">
+                <div class="card-title">📅 2026暑期实习投递时间表</div>
+                <div style="overflow-x:auto;">
+                <table class="timeline-table">
+                    <thead>
+                        <tr>
+                            <th>事务所</th>
+                            <th>开放时间</th>
+                            <th>截止</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>PwC</strong></td>
+                            <td>已开放</td>
+                            <td>滚动</td>
+                            <td class="status-hot">🔥热招</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deloitte</strong></td>
+                            <td>2月</td>
+                            <td>滚动</td>
+                            <td class="status-open">即将开放</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EY</strong></td>
+                            <td>1-4月</td>
+                            <td>4月</td>
+                            <td class="status-open">进行中</td>
+                        </tr>
+                        <tr>
+                            <td><strong>KPMG</strong></td>
+                            <td>11-1月</td>
+                            <td>1月</td>
+                            <td class="status-close">已截止</td>
+                        </tr>
+                        <tr>
+                            <td><strong>信永中和</strong></td>
+                            <td>滚动</td>
+                            <td>无</td>
+                            <td class="status-hot">🔥随时</td>
+                        </tr>
+                        <tr>
+                            <td><strong>容诚</strong></td>
+                            <td>3-5月</td>
+                            <td>5月</td>
+                            <td class="status-hot">🔥热招</td>
+                        </tr>
+                        <tr>
+                            <td><strong>天健</strong></td>
+                            <td>分所差异</td>
+                            <td>滚动</td>
+                            <td class="status-open">联系分所</td>
+                        </tr>
+                        <tr>
+                            <td><strong>立信</strong></td>
+                            <td>2-4月</td>
+                            <td>滚动</td>
+                            <td class="status-open">进行中</td>
+                        </tr>
+                        <tr>
+                            <td><strong>本地所</strong></td>
+                            <td>全年</td>
+                            <td>滚动</td>
+                            <td class="status-hot">🔥常年招</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📆 全年投递日历</div>
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num" style="background:#27ae60;">3-5月</div>
+                        <div class="step-content">
+                            <div class="step-title">四大暑期实习开放</div>
+                            <div class="step-desc">普华、德勤、安永、毕马威</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num" style="background:#f39c12;">5-6月</div>
+                        <div class="step-content">
+                            <div class="step-title">八大暑期实习启动</div>
+                            <div class="step-desc">天健、信永中和、容诚</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num" style="background:#667eea;">9-12月</div>
+                        <div class="step-content">
+                            <div class="step-title">秋招黄金期</div>
+                            <div class="step-desc">八大秋招启动，四大校招</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num" style="background:#e74c3c;">11-4月</div>
+                        <div class="step-content">
+                            <div class="step-title">年审旺季</div>
+                            <div class="step-desc">八大+本地所日常实习需求最大</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                ⏰ 四大暑期实习通常在前一年年底开放网申，建议提前3-4个月开始准备！
+            </div>
+        </div>
+
+        <!-- ⑨ 职场建议 -->
+        <div class="section" id="workplace">
+            <div class="card">
+                <div class="card-title">🌟 新人生存指南</div>
+                <p style="font-size:0.85em;"><strong>📌 入职前准备：</strong></p>
+                <p style="font-size:0.8em;color:#555;">✅ 提前了解事务所组织架构和文化</p>
+                <p style="font-size:0.8em;color:#555;">✅ 复习会计准则（收入/租赁/金融工具）</p>
+                <p style="font-size:0.8em;color:#555;">✅ 熟悉Excel快捷键（VLOOKUP/透视表）</p>
+                <p style="font-size:0.8em;color:#555;">✅ 准备专业着装（商务正装）</p>
+                <br>
+                <p style="font-size:0.85em;"><strong>📌 实习期间注意：</strong></p>
+                <p style="font-size:0.8em;color:#555;">✅ 主动沟通 — 不懂就问，别闷头做</p>
+                <p style="font-size:0.8em;color:#555;">✅ 时间管理 — 忙季加班是常态</p>
+                <p style="font-size:0.8em;color:#555;">✅ 文档规范 — 底稿格式要跟team统一</p>
+                <p style="font-size:0.8em;color:#555;">✅ 保密意识 — 客户信息绝对不能外泄</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💰 如何拿到Return Offer</div>
+                <p style="font-size:0.8em;color:#555;">✅ 表现出强烈留用意愿（让经理知道）</p>
+                <p style="font-size:0.8em;color:#555;">✅ 主动承担更多工作（别只做分配的）</p>
+                <p style="font-size:0.8em;color:#555;">✅ 建立良好的人际关系</p>
+                <p style="font-size:0.8em;color:#555;">✅ 实习结束前主动要feedback</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">⚠️ 职场红线（千万别碰）</div>
+                <div style="font-size:0.8em;color:#e74c3c;">
+                    <p>🚫 泄露客户机密信息</p>
+                    <p>🚫 在社交媒体吐槽客户/项目</p>
+                    <p>🚫 伪造工作底稿/审计证据</p>
+                    <p>🚫 与同事/客户发生不当关系</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📚 推荐学习资源</div>
+                <p style="font-size:0.8em;color:#555;">📖 CAS/IFRS核心准则</p>
+                <p style="font-size:0.8em;color:#555;">📖 审计学教材+事务所内部培训材料</p>
+                <p style="font-size:0.8em;color:#555;">📖 Excel技能（透视表/宏/Power Query）</p>
+                <p style="font-size:0.8em;color:#555;">📖 CPA备考：会计+审计优先</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-item active" data-section="jobs">🏢<br>岗位</div>
+        <div class="nav-item" data-section="big4">🌐<br>四大</div>
+        <div class="nav-item" data-section="bada">🏛️<br>八大</div>
+        <div class="nav-item" data-section="resume">📝<br>简历</div>
+        <div class="nav-item" data-section="interview">💬<br>面试</div>
+    </div>
+</div>
+
+<script>
+    // 显示对应模块
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+
+        document.querySelectorAll('.module-card').forEach(c => c.classList.remove('active'));
+
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+        const navMap = {
+            'jobs': 0, 'big4': 1, 'bada': 2, 'local': 2,
+            'resume': 3, 'match': 3, 'interview': 4,
+            'timeline': 4, 'workplace': 4
+        };
+
+        const navIdx = navMap[id] || 0;
+        if (document.querySelectorAll('.nav-item')[navIdx]) {
+            document.querySelectorAll('.nav-item')[navIdx].classList.add('active');
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleTag(el) {
+        el.classList.toggle('selected');
+    }
+
+    function toggleQA(el) {
+        const answer = el.nextElementSibling;
+        answer.classList.toggle('show');
+    }
+
+    function handleUpload() {
+        alert('Resume upload feature\n\nCan connect to:\n• Tencent Docs API\n• PDF/Word text extraction\n• AI resume optimization\n\nDemo version only');
+    }
+
+    function showMatchResult() {
+        const selected = document.querySelectorAll('.tag-option.selected');
+        const tags = Array.from(selected).map(t => t.textContent).join(' + ');
+
+        let resultHTML = '';
+        if (tags.includes('985') || tags.includes('211')) {
+            resultHTML += '<div style="display:flex;align-items:center;margin-bottom:10px;"><div class="score-circle score-high">85</div><div style="margin-left:10px;"><strong>Big 4 Firms</strong><br><span style="font-size:0.8em;color:#777;">Your background matches Big 4 requirements</span></div></div>';
+        }
+        if (tags.includes('audit internship')) {
+            resultHTML += '<div style="display:flex;align-items:center;margin-bottom:10px;"><div class="score-circle score-high">90</div><div style="margin-left:10px;"><strong>Audit Intern</strong><br><span style="font-size:0.8em;color:#777;">Prior internship is your biggest advantage</span></div></div>';
+        }
+        resultHTML += '<div style="display:flex;align-items:center;margin-bottom:10px;"><div class="score-circle score-mid">75</div><div style="margin-left:10px;"><strong>Domestic Firms</strong><br><span style="font-size:0.8em;color:#777;">Safety choice, higher admission chance</span></div></div>';
+
+        document.getElementById('match-content').innerHTML = resultHTML;
+        document.getElementById('match-result').style.display = 'block';
+    }
+
+    function analyzeJob() {
+        const job = document.getElementById('dream-job').value;
+        if (!job) { alert('Please enter job name'); return; }
+        const detail = '<div style="background:#f8f9ff;border-radius:10px;padding:12px;font-size:0.8em;line-height:1.8;"><p>Analysis: ' + job + '</p><p>Main duties: audit working papers, client communication, data analysis</p><p>Requirements: accounting/audit knowledge, Excel skills</p></div>';
+        document.getElementById('job-detail').innerHTML = detail;
+    }
+
+    document.querySelectorAll('.nav-item').forEach((item, idx) => {
+        item.addEventListener('click', function() {
+            const sectionMap = ['jobs', 'big4', 'bada', 'resume', 'interview'];
+            const targetId = sectionMap[idx] || 'jobs';
+            showSection(targetId);
+        });
+    });
+</script>
+</body>
+</html>
